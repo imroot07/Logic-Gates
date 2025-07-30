@@ -246,6 +246,13 @@ export default function SelectionBar() {
       },
     },
     {
+      name: "Shift Reg",
+      type: "shiftRegister",
+      data: {
+        numRegisters: 4,
+      },
+    },
+    {
       name: "Clock",
       type: "clock",
       data: {},

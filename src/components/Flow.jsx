@@ -18,6 +18,7 @@ import TableGate from "./nodeTypes/TableGate";
 import Decoder from "./nodeTypes/Decoder";
 import Register from "./nodeTypes/Register";
 import MultiRegister from "./nodeTypes/MultiRegister";
+import ShiftRegister from "./nodeTypes/ShiftRegister";
 import Clock from "./nodeTypes/Clock";
 import WireConnection from "./WireConnection";
 import "./Flow.css";
@@ -32,6 +33,7 @@ const nodeTypes = {
   decoder: Decoder,
   register: Register,
   multiRegister: MultiRegister,
+  shiftRegister: ShiftRegister,
   clock: Clock,
 };
 
@@ -57,10 +59,10 @@ export default function Flow() {
               strokeDasharray: active ? 5 : null,
             },
           },
-          els,
+          els
         );
       }),
-    [nodes],
+    [nodes]
   );
 
   useEffect(() => {
@@ -71,7 +73,7 @@ export default function Flow() {
           inputs: node.data.inputs.map((_, i) => {
             const edge = edges.find(
               (edge) =>
-                edge.target === node.id && edge.targetHandle === String(i),
+                edge.target === node.id && edge.targetHandle === String(i)
             );
 
             if (edge == null) return 0;
@@ -83,7 +85,7 @@ export default function Flow() {
         };
 
         return node;
-      }),
+      })
     );
 
     setEdges((edges) =>
@@ -102,7 +104,7 @@ export default function Flow() {
         };
 
         return edge;
-      }),
+      })
     );
   }, [nodes]);
 

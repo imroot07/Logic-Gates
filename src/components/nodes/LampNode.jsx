@@ -1,8 +1,21 @@
 import BaseNode from "./BaseNode";
 
-export default function Lamp(props) {
+export function generateLampNodeData() {
+  return {
+    inputs: [0],
+    outputs: [],
+  };
+}
+
+export default function LampNode(props) {
   return (
-    <BaseNode id={props.id} inputs={props.data.inputs} defaultInputs={[0]} width={80} height={80}>
+    <BaseNode
+      id={props.id}
+      inputs={props.data.inputs}
+      outputs={props.data.outputs}
+      width={80}
+      height={80}
+    >
       <div
         className={
           "centerItems " +

@@ -2,7 +2,7 @@ import { useRef, useEffect } from "react";
 import { useReactFlow } from "reactflow";
 import BaseNode from "./BaseNode";
 
-export default function Register(props) {
+export default function RegisterNode(props) {
   const { setNodes } = useReactFlow();
   const save = useRef(0);
 
@@ -18,7 +18,7 @@ export default function Register(props) {
           }
 
           return node;
-        }),
+        })
       );
 
     save.current = props.data.inputs[0];

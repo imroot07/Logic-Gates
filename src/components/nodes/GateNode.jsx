@@ -1,6 +1,6 @@
 import BaseNode from "./BaseNode";
 
-export default function Gate(props) {
+export default function GateNode(props) {
   return (
     <BaseNode
       id={props.id}

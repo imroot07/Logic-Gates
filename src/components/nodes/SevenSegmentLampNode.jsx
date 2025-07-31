@@ -4,12 +4,19 @@ const spacing = 30;
 const length = 40;
 const width = 10;
 
-export default function SevenSegmentLamp(props) {
+export function generateSevenSegmentLampNodeData() {
+  return {
+    inputs: [0, 0, 0, 0, 0, 0, 0],
+    outputs: [],
+  };
+}
+
+export default function SevenSegmentLampNode(props) {
   return (
     <BaseNode
       id={props.id}
       inputs={props.data.inputs}
-      defaultInputs={[0, 0, 0, 0, 0, 0, 0]}
+      outputs={props.data.outputs}
       width={120}
       height={180}
     >

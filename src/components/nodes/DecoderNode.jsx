@@ -2,7 +2,7 @@ import { useEffect, useMemo } from "react";
 import { useReactFlow } from "reactflow";
 import BaseNode from "./BaseNode";
 
-export default function Decoder(props) {
+export default function DecoderNode(props) {
   const { setNodes } = useReactFlow();
   const numOutputs = 2 ** props.data.numInputs;
   const defaultInputs = useMemo(

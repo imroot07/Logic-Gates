@@ -2,7 +2,7 @@ import { useRef, useEffect, useMemo } from "react";
 import { useReactFlow } from "reactflow";
 import BaseNode from "./BaseNode";
 
-export default function ShiftRegister(props) {
+export default function ShiftRegisterNode(props) {
   const { setNodes } = useReactFlow();
   const save = useRef(0);
   const defaultOutputs = useMemo(

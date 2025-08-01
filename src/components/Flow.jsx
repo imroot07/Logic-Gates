@@ -10,19 +10,17 @@ import ReactFlow, {
 } from "reactflow";
 import "reactflow/dist/style.css";
 import WireConnection from "./WireConnection";
-import { nodeTypes } from "./nodes/nodeTypes.jsx";
+import { nodeTypes } from "./nodeTypes";
 import "./Flow.css";
-import { usePropagate } from "./hooks.js";
 
 export default function Flow() {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
-  const propagate = usePropagate();
 
   const onConnect = useCallback(
     (connection) => {
       setEdges((els) => {
-        const active =
+        const isActive =
           nodes.find((node) => node.id === connection.source).data.outputs[
             parseInt(connection.sourceHandle)
           ] === 1;
@@ -32,24 +30,19 @@ export default function Flow() {
             ...connection,
             style: {
               ...connection.style,
-              stroke: active ? "white" : "var(--connOffBg)",
+              stroke: isActive ? "white" : "var(--connOffBg)",
               strokeWidth: 1.5,
-              animation: active ? "dashdraw 0.5s linear infinite" : null,
-              strokeDasharray: active ? 5 : null,
+              animation: isActive ? "dashdraw 0.5s linear infinite" : null,
+              strokeDasharray: isActive ? 5 : null,
             },
           },
           els
         );
       });
-
-      setTimeout(propagate, 0);
     },
-    [setEdges, nodes, propagate]
+    [setEdges, nodes]
   );
-  const onEdgesDelete = useCallback(
-    () => setTimeout(propagate, 0),
-    [propagate]
-  );
+  const onEdgesDelete = useCallback(() => {}, []);
   const onNodeContextMenu = useCallback((event, node) => {
     event.preventDefault();
 
@@ -61,8 +54,6 @@ export default function Flow() {
     setEdges((eds) =>
       eds.filter((e) => e.source !== node.id && e.target !== node.id)
     );
-
-    setTimeout(propagate, 0);
   }, []);
   const onEdgeContextMenu = useCallback((event, edge) => {
     event.preventDefault();
@@ -72,8 +63,6 @@ export default function Flow() {
     // }
 
     setEdges((eds) => eds.filter((e) => e.id !== edge.id));
-
-    setTimeout(propagate, 0);
   });
 
   // useEffect(() => {

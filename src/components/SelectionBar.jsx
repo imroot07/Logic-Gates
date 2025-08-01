@@ -2,278 +2,14 @@ import { useState } from "react";
 import { Container, Row, Button } from "react-bootstrap";
 import { useReactFlow } from "reactflow";
 import { uuidv4 } from "../utils";
-// import { sevenSegmentEncoderTable } from "./tables/sevenSegmentEncoderTable.js";
-// import { getFlowTable } from "./tables/flowTable.js";
-// import { getMultiplexerTable } from "./tables/multiplexerTable.js";
-import { generateSwitchNodeData } from "./nodes/SwitchNode.jsx";
-import { generateLampNodeData } from "./nodes/LampNode.jsx";
-import { generateMultiSwitchNodeData } from "./nodes/MultiSwitchNode.jsx";
-import { generateMultiLampNodeData } from "./nodes/MultiLampNode.jsx";
-import { generateSevenSegmentLampNodeData } from "./nodes/SevenSegmentLampNode.jsx";
-import { generateButtonNodeData } from "./nodes/ButtonNode.jsx";
-import { generateTableGateNodeData } from "./nodes/TableGateNode.jsx";
+import { defaultSelectionNodeTypes } from "./defaultSelectionNodeTypes.jsx";
 
 export default function SelectionBar() {
   const { setNodes, getViewport } = useReactFlow();
-  const [nodeTypes, setNodeTypes] = useState([
-    {
-      name: "Button",
-      type: "button",
-      data: generateButtonNodeData(),
-    },
-    {
-      name: "Switch",
-      type: "switch",
-      data: generateSwitchNodeData(),
-    },
-    {
-      name: "4 Bit Switch",
-      type: "multiSwitch",
-      data: generateMultiSwitchNodeData(4),
-    },
-    {
-      name: "Lamp",
-      type: "lamp",
-      data: generateLampNodeData(),
-    },
-    {
-      name: "4 Bit Lamp",
-      type: "multiLamp",
-      data: generateMultiLampNodeData(4),
-    },
-    {
-      name: "7 Seg Lamp",
-      type: "sevenSegmentLamp",
-      data: generateSevenSegmentLampNodeData(),
-    },
-    {
-      name: "Not Gate",
-      type: "tableGate",
-      data: generateTableGateNodeData([[1], [0]], "Not"),
-    },
-    // {
-    //   name: "Or Gate",
-    //   type: "tableGate",
-    //   data: {
-    //     numInputs: 2,
-    //     table: [[0], [1], [1], [1]],
-    //     label: "Or",
-    //   },
-    // },
-    // {
-    //   name: "4 Or Gate",
-    //   type: "tableGate",
-    //   data: {
-    //     numInputs: 4,
-    //     table: [
-    //       [0],
-    //       [1],
-    //       [1],
-    //       [1],
-    //       [1],
-    //       [1],
-    //       [1],
-    //       [1],
-    //       [1],
-    //       [1],
-    //       [1],
-    //       [1],
-    //       [1],
-    //       [1],
-    //       [1],
-    //       [1],
-    //     ],
-    //     label: "4 Or",
-    //   },
-    // },
-    // {
-    //   name: "Nor Gate",
-    //   type: "tableGate",
-    //   data: {
-    //     numInputs: 2,
-    //     table: [[1], [0], [0], [0]],
-    //     label: "Nor",
-    //   },
-    // },
-    // {
-    //   name: "And Gate",
-    //   type: "tableGate",
-    //   data: {
-    //     numInputs: 2,
-    //     table: [[0], [0], [0], [1]],
-    //     label: "And",
-    //   },
-    // },
-    // {
-    //   name: "Nand Gate",
-    //   type: "tableGate",
-    //   data: {
-    //     numInputs: 2,
-    //     table: [[1], [1], [1], [0]],
-    //     label: "Nand",
-    //   },
-    // },
-    // {
-    //   name: "Xor Gate",
-    //   type: "tableGate",
-    //   data: {
-    //     numInputs: 2,
-    //     table: [[0], [1], [1], [0]],
-    //     label: "Xor",
-    //   },
-    // },
-    // {
-    //   name: "Xnor Gate",
-    //   type: "tableGate",
-    //   data: {
-    //     numInputs: 2,
-    //     table: [[1], [0], [0], [1]],
-    //     label: "Xnor",
-    //   },
-    // },
-    // {
-    //   name: "Constant",
-    //   type: "tableGate",
-    //   data: {
-    //     numInputs: 0,
-    //     table: [[1]],
-    //     label: "Cnst",
-    //   },
-    // },
-    // {
-    //   name: "4 Bit Decoder",
-    //   type: "decoder",
-    //   data: {
-    //     numInputs: 4,
-    //   },
-    // },
-    // {
-    //   name: "7 Seg Encoder",
-    //   type: "tableGate",
-    //   data: {
-    //     height: 280,
-    //     numInputs: 10,
-    //     table: sevenSegmentEncoderTable,
-    //     label: "7Sg-En",
-    //   },
-    // },
-    // {
-    //   name: "4 Bit Multiplexer",
-    //   type: "tableGate",
-    //   data: {
-    //     height: 280,
-    //     numInputs: 9,
-    //     table: getMultiplexerTable(4),
-    //     label: "4B-Mpx",
-    //   },
-    // },
-    // {
-    //   name: "4 Bit Flow Gate",
-    //   type: "tableGate",
-    //   data: {
-    //     height: 150,
-    //     numInputs: 5,
-    //     table: getFlowTable(4),
-    //     label: "4B Flow",
-    //   },
-    // },
-    // {
-    //   name: "Half Adder",
-    //   type: "tableGate",
-    //   data: {
-    //     numInputs: 2,
-    //     table: [
-    //       [0, 0],
-    //       [1, 0],
-    //       [1, 0],
-    //       [0, 1],
-    //     ],
-    //     label: "H-A",
-    //   },
-    // },
-    // {
-    //   name: "Adder Tile",
-    //   type: "tableGate",
-    //   data: {
-    //     numInputs: 3,
-    //     table: [
-    //       [0, 0],
-    //       [1, 0],
-    //       [1, 0],
-    //       [0, 1],
-    //       [1, 0],
-    //       [0, 1],
-    //       [0, 1],
-    //       [1, 1],
-    //     ],
-    //     label: "A-T",
-    //   },
-    // },
-    // {
-    //   name: "SR Latch",
-    //   type: "tableGate",
-    //   data: {
-    //     numInputs: 2,
-    //     table: [
-    //       ["latch", "latch"],
-    //       [0, 1],
-    //       [1, 0],
-    //       [0, 0],
-    //     ],
-    //     label: "SR-L",
-    //   },
-    // },
-    // {
-    //   name: "D Latch",
-    //   type: "tableGate",
-    //   data: {
-    //     numInputs: 2,
-    //     table: [
-    //       ["latch", "latch"],
-    //       [0, 1],
-    //       ["latch", "latch"],
-    //       [1, 0],
-    //     ],
-    //     label: "D-L",
-    //   },
-    // },
-    // {
-    //   name: "Register",
-    //   type: "register",
-    //   data: {},
-    // },
-    // {
-    //   name: "4 Bit Register",
-    //   type: "multiRegister",
-    //   data: {
-    //     numRegisters: 4,
-    //   },
-    // },
-    // {
-    //   name: "Shift Reg",
-    //   type: "shiftRegister",
-    //   data: {
-    //     numRegisters: 4,
-    //   },
-    // },
-    // {
-    //   name: "Shift Reg Load",
-    //   type: "shiftRegisterWithLoad",
-    //   data: {
-    //     numRegisters: 4,
-    //   },
-    // },
-    // {
-    //   name: "Delay",
-    //   type: "delay",
-    //   data: {},
-    // },
-    // {
-    //   name: "Clock",
-    //   type: "clock",
-    //   data: {},
-    // },
-  ]);
+  const [offsetCounter, setOffsetCounter] = useState(0);
+  const [selectionNodeTypes, setSelectionNodeTypes] = useState(
+    defaultSelectionNodeTypes
+  );
 
   return (
     <Container
@@ -284,8 +20,9 @@ export default function SelectionBar() {
         overflowY: "scroll",
         borderRight: "1px solid white",
       }}
+      onMouseLeave={() => setOffsetCounter(0)}
     >
-      {nodeTypes.map((nodeData, i) => (
+      {selectionNodeTypes.map((nodeData, i) => (
         <Row key={i} style={{ margin: 0, padding: 7 }}>
           <Button
             variant="dark"
@@ -297,18 +34,16 @@ export default function SelectionBar() {
                 ...nodes,
                 {
                   id: uuidv4(),
-                  data: {
-                    inputs: [],
-                    outputs: [],
-                    ...nodeData.data,
-                  },
-                  position: {
-                    x: (50 - viewport.x) / viewport.zoom,
-                    y: (50 - viewport.y) / viewport.zoom,
-                  },
                   type: nodeData.type,
+                  data: nodeData.dataGenerator(),
+                  position: {
+                    x: (50 + 15 * offsetCounter - viewport.x) / viewport.zoom,
+                    y: (50 + 15 * offsetCounter - viewport.y) / viewport.zoom,
+                  },
                 },
               ]);
+
+              setOffsetCounter((curr) => curr + 1);
             }}
           >
             {nodeData.name}

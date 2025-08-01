@@ -1,13 +1,13 @@
 import BaseNode from "./BaseNode";
 
-export function generateLampNodeData() {
+export function generateDefaultLampData() {
   return {
     inputs: [0],
     outputs: [],
   };
 }
 
-export default function LampNode(props) {
+export default function Lamp(props) {
   return (
     <BaseNode
       id={props.id}

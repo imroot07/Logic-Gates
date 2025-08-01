@@ -4,21 +4,23 @@ const spacing = 30;
 const length = 40;
 const width = 10;
 
-export function generateSevenSegmentLampNodeData() {
+export function generateDefaultSevenSegmentLampData() {
   return {
     inputs: [0, 0, 0, 0, 0, 0, 0],
     outputs: [],
   };
 }
 
-export default function SevenSegmentLampNode(props) {
+export default function SevenSegmentLamp(props) {
   return (
     <BaseNode
       id={props.id}
       inputs={props.data.inputs}
       outputs={props.data.outputs}
-      width={120}
-      height={180}
+      style={{
+        width: 120,
+        height: 180,
+      }}
     >
       <div
         className={

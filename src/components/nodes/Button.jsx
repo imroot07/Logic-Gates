@@ -1,35 +1,33 @@
 import { useCallback } from "react";
-import { useSetOutputs, usePropagate } from "../hooks.js";
+import { useSetOutputs } from "../hooks";
 import BaseNode from "./BaseNode";
 
-export function generateButtonNodeData() {
+export function generateDefaultButtonData() {
   return {
     inputs: [],
     outputs: [0],
   };
 }
 
-export default function ButtonNode(props) {
-  const propagate = usePropagate();
-  const setOutputs = useSetOutputs();
-  const toggleOn = useCallback((event) => {
-    if (event.button === 0) setOutputs(props.id, () => [1]);
-
-    setTimeout(propagate, 0);
-  }, []);
-  const toggleOff = useCallback(() => {
-    setOutputs(props.id, () => [0]);
-    
-    setTimeout(propagate, 0);
-  }, []);
+export default function Button(props) {
+  const setOutputs = useSetOutputs(props.id);
+  const toggleOn = useCallback(
+    (event) => {
+      if (event.button === 0) setOutputs([1]);
+    },
+    [setOutputs]
+  );
+  const toggleOff = useCallback(() => setOutputs([0]), [setOutputs]);
 
   return (
     <BaseNode
       id={props.id}
       inputs={props.data.inputs}
       outputs={props.data.outputs}
-      width={80}
-      height={80}
+      style={{
+        width: 80,
+        height: 80,
+      }}
     >
       <div
         className={

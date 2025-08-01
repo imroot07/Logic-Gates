@@ -1,44 +1,47 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useReactFlow } from "reactflow";
+import { useSetOutputs } from "../hooks";
 import BaseNode from "./BaseNode";
 
-export default function DelayNode(props) {
+export function generateDefaultClockData() {
+  return {
+    inputs: [],
+    outputs: [0],
+  };
+}
+
+export default function Clock(props) {
   const { setNodes } = useReactFlow();
   const [delay, setDelay] = useState(1);
 
-  //   const tick = useCallback(() => {
-  //     console.log("2");
+  const tick = useCallback(() => {
+    if (!getHasFocus()) return;
 
-  //     setNodes((nodes) =>
-  //       nodes.map((node) => {
-  //         if (node.id === props.id) {
-  //           node.data = {
-  //             ...node.data,
-  //             outputs: props.data.inputs ?? [0],
-  //           };
-  //         }
+    setNodes((nodes) =>
+      nodes.map((node) => {
+        if (node.id === props.id) {
+          node.data = {
+            ...node.data,
+            outputs: node.data.outputs[0] === 1 ? [0] : [1],
+          };
+        }
 
-  //         return node;
-  //       })
-  //     );
-  //   }, [props.data.inputs]);
+        return node;
+      })
+    );
+  }, []);
 
   useEffect(() => {
-    console.log("1");
-  }, [props.data.inputs]);
-  // const timeoutId = setTimeout(() => tick(), delay * 1000);
+    const intervalId = setInterval(() => tick(), delay * 1000);
 
-  // return () => clearTimeout(timeoutId);
+    return () => clearInterval(intervalId);
+  }, [delay]);
 
   return (
     <BaseNode
       id={props.id}
       inputs={props.data.inputs}
       outputs={props.data.outputs}
-      defaultInputs={[0]}
-      defaultOutputs={[0]}
-      width={80}
-      height={60}
     >
       <input
         defaultValue="1"

@@ -1,16 +1,15 @@
 import { useCallback, useMemo } from "react";
-import { usePropagate, useSetOutputs } from "../hooks.js";
+import {  useSetOutputs } from "../hooks";
 import BaseNode from "./BaseNode";
 
-export function generateMultiSwitchNodeData(numSwitches) {
+export function generateDefaultMultiSwitchData(numSwitches) {
   return {
     inputs: [],
     outputs: Array.from({ length: numSwitches }, () => 0),
   };
 }
 
-export default function MultiSwitchNode(props) {
-  const propagate = usePropagate();
+export default function MultiSwitch(props) {
   const setOutputs = useSetOutputs();
   const toggle = useCallback(
     (idx) => () => {
@@ -19,10 +18,8 @@ export default function MultiSwitchNode(props) {
           i === idx ? (value === 1 ? 0 : 1) : value
         )
       );
-
-      setTimeout(propagate, 0);
     },
-    [props.id, propagate, setOutputs]
+    [props.id, setOutputs]
   );
   const numSwitches = props.data.outputs.length;
 
@@ -31,8 +28,10 @@ export default function MultiSwitchNode(props) {
       id={props.id}
       inputs={props.data.inputs}
       outputs={props.data.outputs}
-      width={80}
-      height={numSwitches * 45 + 30}
+      style={{
+        width: 80,
+        height: numSwitches * 45 + 30,
+      }}
     >
       <div
         style={{

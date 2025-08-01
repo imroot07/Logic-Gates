@@ -1,35 +1,34 @@
-import { useMemo } from "react";
 import BaseNode from "./BaseNode";
 
-export function generateMultiLampNodeData(numLamps) {
+export function generateDefaultMultiLampData(numLamps) {
   return {
     inputs: Array.from({ length: numLamps }, () => 0),
     outputs: [],
   };
 }
 
-export default function MultiLampNode(props) {
-  const numLamps = props.data.inputs.length;
-
+export default function MultiLamp(props) {
   return (
     <BaseNode
       id={props.id}
       inputs={props.data.inputs}
       outputs={props.data.outputs}
-      width={80}
-      height={numLamps * 45 + 30}
+      style={{
+        width: 80,
+        height: props.data.inputs.length * 45 + 30,
+      }}
     >
       <div
         style={{
           display: "block",
         }}
       >
-        {Array.from({ length: numLamps }).map((_, i) => (
+        {Array.from({ length: props.data.inputs.length }).map((_, i) => (
           <div
             key={i}
             className={
               "centerItems " +
-              (props.data.inputs[numLamps - 1 - i] === 1
+              (props.data.inputs[props.data.inputs.length - 1 - i] === 1
                 ? "powerStatusActive"
                 : "powerStatusInactive")
             }

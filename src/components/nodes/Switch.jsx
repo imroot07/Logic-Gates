@@ -1,30 +1,29 @@
-import { useCallback } from "react";
-import { usePropagate, useSetOutputs } from "../hooks.js";
+import { useSetOutputs } from "../hooks";
 import BaseNode from "./BaseNode";
 
-export function generateSwitchNodeData() {
+export function generateDefaultSwitchData() {
   return {
     inputs: [],
     outputs: [0],
   };
 }
 
-export default function SwitchNode(props) {
-  const propagate = usePropagate();
-  const setOutputs = useSetOutputs();
-  const toggle = useCallback(() => {
-    setOutputs(props.id, (data) => (data.outputs[0] === 1 ? [0] : [1]));
-
-    setTimeout(propagate, 0);
-  }, [props.id, propagate, setOutputs]);
+export default function Switch(props) {
+  const setOutputs = useSetOutputs(props.id);
+  const toggle = useCallback(
+    () => setOutputs((data) => (data.outputs[0] === 1 ? [0] : [1])),
+    [setOutputs]
+  );
 
   return (
     <BaseNode
       id={props.id}
       inputs={props.data.inputs}
       outputs={props.data.outputs}
-      width={80}
-      height={80}
+      style={{
+        width: 80,
+        height: 80,
+      }}
     >
       <div
         className={

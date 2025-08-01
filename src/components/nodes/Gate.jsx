@@ -1,9 +1,10 @@
 import BaseNode from "./BaseNode";
 
-export function generateDefaultGateData(numInputs, gateFunction) {
+export function generateDefaultGateData({ label, numInputs, gateFunction }) {
   const inputs = Array.from({ length: numInputs }, () => 0);
 
   return {
+    label,
     inputs,
     outputs: gateFunction(inputs),
     gateFunction,

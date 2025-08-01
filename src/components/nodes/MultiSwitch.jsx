@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from "react";
-import {  useSetOutputs } from "../hooks";
+import { useSetOutputs } from "../hooks";
 import BaseNode from "./BaseNode";
 
 export function generateDefaultMultiSwitchData(numSwitches) {
@@ -10,16 +10,15 @@ export function generateDefaultMultiSwitchData(numSwitches) {
 }
 
 export default function MultiSwitch(props) {
-  const setOutputs = useSetOutputs();
+  const setOutputs = useSetOutputs(props.id);
   const toggle = useCallback(
-    (idx) => () => {
-      setOutputs(props.id, (data) =>
+    (idx) => () =>
+      setOutputs((data) =>
         data.outputs.map((value, i) =>
           i === idx ? (value === 1 ? 0 : 1) : value
         )
-      );
-    },
-    [props.id, setOutputs]
+      ),
+    [setOutputs]
   );
   const numSwitches = props.data.outputs.length;
 

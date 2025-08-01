@@ -58,16 +58,87 @@ export const defaultSelectionNodeTypes = [
     name: "Not Gate",
     type: "gate",
     dataGenerator: () =>
-      Generators.generateDefaultGateData(1, (inputs) =>
-        inputs[0] === 1 ? [0] : [1]
-      ),
+      Generators.generateDefaultGateData({
+        label: "Not",
+        numInputs: 1,
+        gateFunction: (inputs) => (inputs[0] === 1 ? [0] : [1]),
+      }),
   },
   {
     name: "Or Gate",
     type: "gate",
     dataGenerator: () =>
-      Generators.generateDefaultGateData(2, (inputs) =>
-        inputs[0] === 1 || inputs[1] === 1 ? [1] : [0]
-      ),
+      Generators.generateDefaultGateData({
+        label: "Or",
+        numInputs: 2,
+        gateFunction: (inputs) =>
+          inputs[0] === 1 || inputs[1] === 1 ? [1] : [0],
+      }),
   },
+  {
+    name: "Nor Gate",
+    type: "gate",
+    dataGenerator: () =>
+      Generators.generateDefaultGateData({
+        label: "Nor",
+        numInputs: 2,
+        gateFunction: (inputs) =>
+          inputs[0] === 1 || inputs[1] === 1 ? [0] : [1],
+      }),
+  },
+  {
+    name: "And Gate",
+    type: "gate",
+    dataGenerator: () =>
+      Generators.generateDefaultGateData({
+        label: "And",
+        numInputs: 2,
+        gateFunction: (inputs) =>
+          inputs[0] === 1 && inputs[1] === 1 ? [1] : [0],
+      }),
+  },
+  {
+    name: "Nand Gate",
+    type: "gate",
+    dataGenerator: () =>
+      Generators.generateDefaultGateData({
+        label: "Nand",
+        numInputs: 2,
+        gateFunction: (inputs) =>
+          inputs[0] === 1 && inputs[1] === 1 ? [0] : [1],
+      }),
+  },
+  {
+    name: "Xor Gate",
+    type: "gate",
+    dataGenerator: () =>
+      Generators.generateDefaultGateData({
+        label: "Xor",
+        numInputs: 2,
+        gateFunction: (inputs) =>
+          (inputs[0] === 1) !== (inputs[1] === 1) ? [1] : [0],
+      }),
+  },
+  {
+    name: "Xnor Gate",
+    type: "gate",
+    dataGenerator: () =>
+      Generators.generateDefaultGateData({
+        label: "Xnor",
+        numInputs: 2,
+        gateFunction: (inputs) =>
+          (inputs[0] === 1) === (inputs[1] === 1) ? [1] : [0],
+      }),
+  },
+  // {
+  //   name: "SR Latch",
+  //   type: "gate",
+  //   dataGenerator: () =>
+  //     Generators.generateDefaultGateData({
+  //       label: "Xor",
+  //       numInputs: 2,
+  //       gateFunction: (inputs) =>
+  //         (inputs[0] === 1) === (inputs[1] === 1) ? [0] : [1],
+  //     }),
+  // },
 ];

@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import ReactFlow, {
   Controls,
   Background,
@@ -11,6 +11,7 @@ import ReactFlow, {
 import "reactflow/dist/style.css";
 import WireConnection from "./WireConnection";
 import { nodeTypes } from "./nodeTypes";
+import { useTickSimulation } from "./hooks";
 import "./Flow.css";
 
 export default function Flow() {
@@ -42,70 +43,104 @@ export default function Flow() {
     },
     [setEdges, nodes]
   );
-  const onEdgesDelete = useCallback(() => {}, []);
-  const onNodeContextMenu = useCallback((event, node) => {
-    event.preventDefault();
+  const onEdgesDelete = useCallback(
+    (eds) => {
+      setNodes((nds) =>
+        nds.map((node) => {
+          const targetEdges = eds.filter((edge) => edge.target === node.id);
 
-    // if (!window.confirm("Are you sure you want to delete this node?")) {
-    //   return;
-    // }
+          if (targetEdges.length === 0) return node;
 
-    setNodes((nds) => nds.filter((n) => n.id !== node.id));
-    setEdges((eds) =>
-      eds.filter((e) => e.source !== node.id && e.target !== node.id)
-    );
-  }, []);
-  const onEdgeContextMenu = useCallback((event, edge) => {
-    event.preventDefault();
+          return {
+            ...node,
+            data: {
+              ...node.data,
+              inputs: node.data.inputs.map((value, i) =>
+                targetEdges.find((e) => parseInt(e.targetHandle) === i) == null
+                  ? value
+                  : 0
+              ),
+            },
+          };
+        })
+      );
+    },
+    [setNodes]
+  );
+  const onNodeContextMenu = useCallback(
+    (event, node) => {
+      event.preventDefault();
 
-    // if (!window.confirm("Are you sure you want to delete this edge?")) {
-    //   return;
-    // }
+      // if (!window.confirm("Are you sure you want to delete this node?")) {
+      //   return;
+      // }
 
-    setEdges((eds) => eds.filter((e) => e.id !== edge.id));
-  });
+      const removedEdges = [];
 
-  // useEffect(() => {
-  //   setNodes((nodes) =>
-  //     nodes.map((node) => {
-  //       node.data.inputs = node.data.inputs.map((_, i) => {
-  //         const edge = edges.find(
-  //           (edge) => edge.target === node.id && edge.targetHandle === String(i)
-  //         );
+      setNodes((nds) => nds.filter((n) => n.id !== node.id));
+      setEdges((eds) =>
+        eds.filter((e) => {
+          if (e.source !== node.id && e.target !== node.id) {
+            return true;
+          }
 
-  //         if (edge == null) return 0;
+          removedEdges.push(e);
 
-  //         const n = nodes.find((node) => node.id === edge.source);
+          return false;
+        })
+      );
 
-  //         if (n == null) return 0;
+      onEdgesDelete(removedEdges);
+    },
+    [setNodes, setEdges, onEdgesDelete]
+  );
+  const onEdgeContextMenu = useCallback(
+    (event, edge) => {
+      event.preventDefault();
 
-  //         return n.data.outputs[parseInt(edge.sourceHandle)];
-  //       });
+      // if (!window.confirm("Are you sure you want to delete this edge?")) {
+      //   return;
+      // }
 
-  //       return node;
-  //     })
-  //   );
+      const removedEdges = [];
 
-  //   setEdges((edges) =>
-  //     edges.map((edge) => {
-  //       const n = nodes.find((node) => node.id === edge.source);
-  //       const active =
-  //         n == null ? false : n.data.outputs[parseInt(edge.sourceHandle)] === 1;
+      setEdges((eds) =>
+        eds.filter((e) => {
+          if (e.id !== edge.id) {
+            return true;
+          }
 
-  //       edge.style = {
-  //         ...edge.style,
-  //         stroke: active ? "white" : "var(--connOffBg)",
-  //         strokeWidth: 1.5,
-  //         animation: active ? "dashdraw 0.5s linear infinite" : null,
-  //         strokeDasharray: active ? 5 : null,
-  //       };
+          removedEdges.push(e);
 
-  //       return edge;
-  //     })
-  //   );
-  // }, [nodes]);
+          return false;
+        })
+      );
 
-  // useEffect(() => {}, [edges]);
+      onEdgesDelete(removedEdges);
+    },
+    [setEdges, onEdgesDelete]
+  );
+
+  const tickSimulation = useTickSimulation();
+  const requestRef = useRef();
+
+  const tick = useCallback(() => {
+    tickSimulation(5);
+
+    // requestRef.current = requestAnimationFrame(tick);
+
+    requestRef.current = setTimeout(tick, 20);
+  }, [tickSimulation]);
+
+  useEffect(() => {
+    // requestRef.current = requestAnimationFrame(tick);
+
+    // return () => cancelAnimationFrame(requestRef.current);
+
+    requestRef.current = setTimeout(tick, 500);
+
+    return () => clearTimeout(requestRef.current);
+  }, [tick]);
 
   return (
     <div style={{ height: "100%" }}>

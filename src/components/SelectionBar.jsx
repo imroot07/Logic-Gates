@@ -2,14 +2,15 @@ import { useState } from "react";
 import { Container, Row, Button } from "react-bootstrap";
 import { useReactFlow } from "reactflow";
 import { uuidv4 } from "../utils";
-import { defaultSelectionNodeTypes } from "./defaultSelectionNodeTypes.jsx";
+import { defaultSelectionNodeTypes } from "./defaultSelectionNodeTypes";
 
 export default function SelectionBar() {
   const { setNodes, getViewport } = useReactFlow();
   const [offsetCounter, setOffsetCounter] = useState(0);
-  const [selectionNodeTypes, setSelectionNodeTypes] = useState(
-    defaultSelectionNodeTypes
-  );
+  // const [selectionNodeTypes, setSelectionNodeTypes] = useState(
+  //   defaultSelectionNodeTypes
+  // );
+  const selectionNodeTypes = defaultSelectionNodeTypes;
 
   return (
     <Container

@@ -1,7 +1,12 @@
 import { useMemo } from "react";
 import { Handle, Position, useEdges } from "reactflow";
 
-const handlePadding = 0;
+const handleSpacing = 25;
+const handlePadding = 0.75;
+
+function percent(i, n) {
+  return (i + handlePadding) / (n - 1 + 2 * handlePadding);
+}
 
 export default function BaseNode(props) {
   const edges = useEdges();
@@ -15,31 +20,30 @@ export default function BaseNode(props) {
 
   return (
     <>
-      {props.inputs?.map((value, i) => {
-        const percent = (i + 0.5) / props.inputs.length;
-
-        return (
-          <Handle
-            key={i}
-            id={String(i)}
-            type="target"
-            position={Position.Left}
-            className={
-              value === 1 ? "powerStatusActive" : "powerStatusInactive"
-            }
-            style={{
-              top: `${100 - 100 * percent}%`,
-            }}
-            isConnectable={!existingConnections.includes(String(i))}
-          ></Handle>
-        );
-      })}
+      {props.inputs?.map((value, i) => (
+        <Handle
+          key={i}
+          id={String(i)}
+          type="target"
+          position={Position.Left}
+          className={value === 1 ? "powerStatusActive" : "powerStatusInactive"}
+          style={{
+            top: `${100 - 100 * percent(i, props.inputs.length)}%`,
+          }}
+          isConnectable={!existingConnections.includes(String(i))}
+        ></Handle>
+      ))}
       <div
         className="gate"
         style={{
           width: 80,
-          height:
-            25 * (Math.max(props.inputs.length, props.outputs.length) - 1) + 40,
+          height: Math.max(
+            50,
+            handleSpacing *
+              (Math.max(props.inputs.length, props.outputs.length) -
+                1 +
+                2 * handlePadding)
+          ),
           ...props.style,
         }}
       >
@@ -53,7 +57,7 @@ export default function BaseNode(props) {
           position={Position.Right}
           className={value === 1 ? "powerStatusActive" : "powerStatusInactive"}
           style={{
-            top: `${100 - (100 * (i + 1)) / (props.outputs.length + 1)}%`,
+            top: `${100 - 100 * percent(i, props.outputs.length)}%`,
           }}
         ></Handle>
       ))}

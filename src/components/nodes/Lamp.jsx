@@ -13,8 +13,10 @@ export default function Lamp(props) {
       id={props.id}
       inputs={props.data.inputs}
       outputs={props.data.outputs}
-      width={80}
-      height={80}
+      style={{
+        width: 80,
+        height: 80,
+      }}
     >
       <div
         className={

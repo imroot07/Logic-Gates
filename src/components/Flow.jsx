@@ -12,33 +12,80 @@ import "reactflow/dist/style.css";
 import WireConnection from "./WireConnection";
 import { nodeTypes } from "./nodeTypes";
 import { useTickSimulation } from "./hooks";
+import { uuidv4 } from "../utils";
 import "./Flow.css";
 
 export default function Flow() {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const shiftKey = useRef(false);
+  const ctrlKey = useRef(false);
 
   const onConnect = useCallback(
     (connection) => {
-      setEdges((els) => {
-        const isActive =
-          nodes.find((node) => node.id === connection.source).data.outputs[
-            parseInt(connection.sourceHandle)
-          ] === 1;
+      setEdges((currEdges) => {
+        const sourceNode = nodes.find((node) => node.id === connection.source);
+        const targetNode = nodes.find((node) => node.id === connection.target);
 
-        return addEdge(
-          {
-            ...connection,
-            style: {
-              ...connection.style,
-              stroke: isActive ? "white" : "var(--connOffBg)",
-              strokeWidth: 1.5,
-              animation: isActive ? "dashdraw 0.5s linear infinite" : null,
-              strokeDasharray: isActive ? 5 : null,
+        if (shiftKey.current) {
+          const usedSourceHandles = currEdges
+            .filter((edge) => edge.source === sourceNode.id)
+            .map((edge) => parseInt(edge.sourceHandle));
+          const usedTargetHandles = currEdges
+            .filter((edge) => edge.target === targetNode.id)
+            .map((edge) => parseInt(edge.targetHandle));
+
+          const sourceHandles = Array.from(
+            { length: sourceNode.data.outputs.length },
+            (_, i) => i
+          ).filter((i) => !usedSourceHandles.includes(i));
+          const targetHandles = Array.from(
+            { length: targetNode.data.inputs.length },
+            (_, i) => i
+          ).filter((i) => !usedTargetHandles.includes(i));
+
+          const numEdges = Math.min(sourceHandles.length, targetHandles.length);
+
+          let newEdges = currEdges;
+
+          for (let i = 0; i < numEdges; i++) {
+            const isActive = sourceNode.data.outputs[sourceHandles[i]] === 1;
+            const newConnection = {
+              source: connection.source,
+              target: connection.target,
+              sourceHandle: String(sourceHandles[i]),
+              targetHandle: String(targetHandles[i]),
+              style: {
+                ...connection.style,
+                stroke: isActive ? "white" : "var(--connOffBg)",
+                strokeWidth: 1.5,
+                animation: isActive ? "dashdraw 0.5s linear infinite" : null,
+                strokeDasharray: isActive ? 5 : null,
+              },
+            };
+
+            newEdges = addEdge(newConnection, newEdges);
+          }
+
+          return newEdges;
+        } else {
+          const isActive =
+            sourceNode.data.outputs[parseInt(connection.sourceHandle)] === 1;
+
+          return addEdge(
+            {
+              ...connection,
+              style: {
+                ...connection.style,
+                stroke: isActive ? "white" : "var(--connOffBg)",
+                strokeWidth: 1.5,
+                animation: isActive ? "dashdraw 0.5s linear infinite" : null,
+                strokeDasharray: isActive ? 5 : null,
+              },
             },
-          },
-          els
-        );
+            currEdges
+          );
+        }
       });
     },
     [setEdges, nodes]
@@ -106,8 +153,13 @@ export default function Flow() {
 
       setEdges((eds) =>
         eds.filter((e) => {
-          if (e.id !== edge.id) {
-            return true;
+          if (shiftKey.current) {
+            if (e.source !== edge.source || e.target !== edge.target)
+              return true;
+          } else {
+            if (e.id !== edge.id) {
+              return true;
+            }
           }
 
           removedEdges.push(e);
@@ -141,6 +193,43 @@ export default function Flow() {
 
     return () => clearTimeout(requestRef.current);
   }, [tick]);
+
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      // console.log(event.code);
+
+      switch (event.code) {
+        case "ShiftLeft":
+          shiftKey.current = true;
+          break;
+        case "ControlLeft":
+          ctrlKey.current = true;
+          break;
+        default:
+          break;
+      }
+    };
+    const handleKeyUp = (event) => {
+      switch (event.code) {
+        case "ShiftLeft":
+          shiftKey.current = false;
+          break;
+        case "ControlLeft":
+          ctrlKey.current = false;
+          break;
+        default:
+          break;
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
+    };
+  }, []);
 
   return (
     <div style={{ height: "100%" }}>

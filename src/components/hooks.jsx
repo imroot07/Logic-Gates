@@ -56,10 +56,14 @@ export function useTickSimulation() {
         });
 
         newEdges = currEdges.map((edge) => {
+          // cool
           // const sourceNode = currNodes.find((node) => node.id === edge.source);
           // const targetNode = currNodes.find((node) => node.id === edge.target);
+
+          // fast
           const sourceNode = newNodes.find((node) => node.id === edge.source);
           const targetNode = newNodes.find((node) => node.id === edge.target);
+
           const isActive =
             sourceNode == null
               ? false

@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { Generators } from "./nodes";
 
 // Table gate function
@@ -33,6 +34,16 @@ export const defaultSelectionNodeTypes = [
     name: "4 Switch",
     type: "multiSwitch",
     dataGenerator: () => Generators.generateDefaultMultiSwitchData(4),
+  },
+  {
+    name: "Constant",
+    type: "gate",
+    dataGenerator: () =>
+      Generators.generateDefaultGateData({
+        label: "Cnst",
+        numInputs: 0,
+        gateFunction: () => [1],
+      }),
   },
   {
     name: "Clock",
@@ -130,15 +141,72 @@ export const defaultSelectionNodeTypes = [
           (inputs[0] === 1) === (inputs[1] === 1) ? [1] : [0],
       }),
   },
+  {
+    name: "4 Decoder",
+    type: "gate",
+    dataGenerator: () =>
+      Generators.generateDefaultGateData({
+        label: "Dcdr",
+        numInputs: 4,
+        gateFunction: (inputs) => {
+          const index = inputs.reduce(
+            (total, curr, i) => total + (curr === 1 ? 2 ** i : 0),
+            0
+          );
+
+          return Array.from({ length: 2 ** inputs.length }, (_, i) =>
+            i === index ? 1 : 0
+          );
+        },
+      }),
+  },
+  {
+    name: "4 Encoder",
+    type: "gate",
+    dataGenerator: () =>
+      Generators.generateDefaultGateData({
+        label: "Ecdr",
+        numInputs: 2 ** 4,
+        gateFunction: (inputs) => {
+          const value = inputs.findIndex((v) => v === 1) ?? 0;
+
+          return Array.from(
+            { length: Math.log2(inputs.length) },
+            (_, i) => Math.floor(value / 2 ** i) % 2
+          );
+        },
+      }),
+  },
   // {
   //   name: "SR Latch",
   //   type: "gate",
-  //   dataGenerator: () =>
+  //   dataGenerator: () => {
+  //     let prevOutputs = [0, 0];
+
   //     Generators.generateDefaultGateData({
-  //       label: "Xor",
+  //       label: "SR",
   //       numInputs: 2,
-  //       gateFunction: (inputs) =>
-  //         (inputs[0] === 1) === (inputs[1] === 1) ? [0] : [1],
-  //     }),
+  //       gateFunction: (inputs) => {
+  //         let result;
+  //         if (inputs[0] === 1) {
+  //           if (inputs[1] === 1) {
+  //             result = [0, 0];
+  //           } else {
+  //             result = [0, 1];
+  //           }
+  //         } else {
+  //           if (inputs[1] === 1) {
+  //             result = [1, 0];
+  //           } else {
+  //             result = prevOutputs;
+  //           }
+  //         }
+
+  //         prevOutputs = result;
+
+  //         return result;
+  //       },
+  //     });
+  //   },
   // },
 ];

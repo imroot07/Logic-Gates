@@ -1,3 +1,5 @@
+"use client";
+
 import { Nodes } from "./nodes";
 
 export const nodeTypes = {

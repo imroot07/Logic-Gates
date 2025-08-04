@@ -1,3 +1,5 @@
+"use client";
+
 import { useCallback, useMemo } from "react";
 import { useSetOutputs } from "../hooks";
 import BaseNode from "./BaseNode";

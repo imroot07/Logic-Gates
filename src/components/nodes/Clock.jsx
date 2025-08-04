@@ -1,3 +1,5 @@
+"use client";
+
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useReactFlow } from "reactflow";
 import { useSetOutputs } from "../hooks";

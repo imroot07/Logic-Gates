@@ -1,3 +1,5 @@
+"use client";
+
 import SelectionBar from "./SelectionBar";
 import Flow from "./Flow";
 import "./App.css";

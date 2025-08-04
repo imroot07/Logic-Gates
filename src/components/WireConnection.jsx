@@ -1,3 +1,5 @@
+"use client";
+
 import { useMemo } from "react";
 import { useStore, useNodes, getBezierPath } from "reactflow";
 

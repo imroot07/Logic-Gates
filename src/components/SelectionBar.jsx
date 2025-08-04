@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import { Container, Row, Button } from "react-bootstrap";
 import { useReactFlow } from "reactflow";

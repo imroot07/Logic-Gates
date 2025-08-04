@@ -1,3 +1,5 @@
+"use client";
+
 import Button, { generateDefaultButtonData } from "./Button";
 import Switch, { generateDefaultSwitchData } from "./Switch";
 import MultiSwitch, { generateDefaultMultiSwitchData } from "./MultiSwitch";

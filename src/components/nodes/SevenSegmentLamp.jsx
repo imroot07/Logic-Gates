@@ -1,3 +1,5 @@
+"use client";
+
 import BaseNode from "./BaseNode";
 
 const spacing = 30;

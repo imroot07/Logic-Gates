@@ -2,6 +2,7 @@
 
 import { useRef } from "react";
 import { Generators } from "./nodes";
+import { sevenSegmentEncoderTable } from "./tables/sevenSegmentEncoderTable";
 
 // Table gate function
 // data.table[
@@ -176,6 +177,23 @@ export const defaultSelectionNodeTypes = [
             { length: Math.log2(inputs.length) },
             (_, i) => Math.floor(value / 2 ** i) % 2
           );
+        },
+      }),
+  },
+  {
+    name: "7 Seg Decoder",
+    type: "gate",
+    dataGenerator: () =>
+      Generators.generateDefaultGateData({
+        label: "7SEn",
+        numInputs: 4,
+        gateFunction: (inputs) => {
+          const index = inputs.reduce(
+            (total, curr, i) => total + (curr === 1 ? 2 ** i : 0),
+            0
+          );
+
+          return sevenSegmentEncoderTable[index];
         },
       }),
   },

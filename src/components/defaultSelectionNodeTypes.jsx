@@ -145,6 +145,17 @@ export const defaultSelectionNodeTypes = [
       }),
   },
   {
+    name: "Imply Gate",
+    type: "gate",
+    dataGenerator: () =>
+      Generators.generateDefaultGateData({
+        label: "Imply",
+        numInputs: 2,
+        gateFunction: (inputs) =>
+          ((inputs[0] === 0) || (inputs[1] === 1)) ? [1] : [0],
+      }),
+  },
+  {
     name: "4 Decoder",
     type: "gate",
     dataGenerator: () =>

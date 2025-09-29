@@ -10,6 +10,7 @@ import SevenSegmentLamp, {
   generateDefaultSevenSegmentLampData,
 } from "./SevenSegmentLamp";
 import Gate, { generateDefaultGateData } from "./Gate";
+import StateGate, {generateDefaultStateGateData} from "./StateGate";
 
 const Nodes = {
   Button,
@@ -19,6 +20,7 @@ const Nodes = {
   MultiLamp,
   SevenSegmentLamp,
   Gate,
+  StateGate,
 };
 
 const Generators = {
@@ -30,6 +32,7 @@ const Generators = {
   generateDefaultMultiLampData,
   generateDefaultSevenSegmentLampData,
   generateDefaultGateData,
+  generateDefaultStateGateData
 };
 
 export { Nodes, Generators };

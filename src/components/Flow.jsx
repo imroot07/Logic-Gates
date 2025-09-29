@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import ReactFlow, {
   Controls,
   Background,
@@ -14,7 +14,6 @@ import "reactflow/dist/style.css";
 import WireConnection from "./WireConnection";
 import { nodeTypes } from "./nodeTypes";
 import { useTickSimulation } from "./hooks";
-import { uuidv4 } from "../utils";
 import "./Flow.css";
 
 export default function Flow() {

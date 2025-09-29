@@ -21,4 +21,6 @@ function getMultiplexerTable(numBits) {
   return multiplexerTable;
 }
 
-export { getMultiplexerTable };
+const multiplexerTable8 = getMultiplexerTable(8);
+
+export { getMultiplexerTable, multiplexerTable8 };

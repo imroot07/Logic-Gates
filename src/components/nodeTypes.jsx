@@ -11,5 +11,5 @@ export const nodeTypes = {
   multiLamp: Nodes.MultiLamp,
   sevenSegmentLamp: Nodes.SevenSegmentLamp,
   gate: Nodes.Gate,
-  dataGate: Nodes.Gate,
+  stateGate: Nodes.StateGate,
 };

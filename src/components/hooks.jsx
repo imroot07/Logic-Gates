@@ -46,15 +46,30 @@ export function useTickSimulation() {
 
       for (let i = 0; i < (ticks ?? 1); i++) {
         newNodes = currNodes.map((node) => {
-          if (node.type !== "gate") return node;
+          if (node.type === "gate") {
+            return {
+              ...node,
+              data: {
+                ...node.data,
+                outputs: node.data.gateFunction(node.data.inputs),
+              },
+            };
+          }
 
-          return {
-            ...node,
-            data: {
-              ...node.data,
-              outputs: node.data.gateFunction(node.data.inputs),
-            },
-          };
+          if (node.type === "stateGate") {
+            const result = node.data.gateFunction(node.data.inputs, node.data.states);
+
+            return {
+              ...node,
+              data: {
+                ...node.data,
+                outputs: result[0],
+                states: result[1],
+              },
+            };
+          }
+
+          return node;
         });
 
         newEdges = currEdges.map((edge) => {

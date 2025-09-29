@@ -1,8 +1,9 @@
 "use client";
 
-import { useRef } from "react";
 import { Generators } from "./nodes";
 import { sevenSegmentEncoderTable } from "./tables/sevenSegmentEncoderTable";
+import { inverterTable8 } from "./tables/inverterTable";
+import { multiplexerTable8 } from "./tables/multiplexerTable";
 
 // Table gate function
 // data.table[
@@ -39,6 +40,11 @@ export const defaultSelectionNodeTypes = [
     dataGenerator: () => Generators.generateDefaultMultiSwitchData(4),
   },
   {
+    name: "8 Switch",
+    type: "multiSwitch",
+    dataGenerator: () => Generators.generateDefaultMultiSwitchData(8),
+  },
+  {
     name: "Constant",
     type: "gate",
     dataGenerator: () =>
@@ -62,6 +68,11 @@ export const defaultSelectionNodeTypes = [
     name: "4 Lamp",
     type: "multiLamp",
     dataGenerator: () => Generators.generateDefaultMultiLampData(4),
+  },
+  {
+    name: "8 Lamp",
+    type: "multiLamp",
+    dataGenerator: () => Generators.generateDefaultMultiLampData(8),
   },
   {
     name: "7 Segment",
@@ -152,44 +163,58 @@ export const defaultSelectionNodeTypes = [
         label: "Imply",
         numInputs: 2,
         gateFunction: (inputs) =>
-          ((inputs[0] === 0) || (inputs[1] === 1)) ? [1] : [0],
+          ((inputs[0] !== 1) || (inputs[1] === 1)) ? [1] : [0],
       }),
   },
   {
-    name: "4 Decoder",
+    name: "Adder Tile",
     type: "gate",
     dataGenerator: () =>
       Generators.generateDefaultGateData({
-        label: "Dcdr",
-        numInputs: 4,
+        label: "AT",
+        numInputs: 3,
         gateFunction: (inputs) => {
-          const index = inputs.reduce(
-            (total, curr, i) => total + (curr === 1 ? 2 ** i : 0),
-            0
-          );
+          let count = 0;
 
-          return Array.from({ length: 2 ** inputs.length }, (_, i) =>
-            i === index ? 1 : 0
-          );
+          if (inputs[0] === 1) count++;
+          if (inputs[1] === 1) count++;
+          if (inputs[2] === 1) count++;
+
+          return [(count == 1 || count == 3) ? 1 : 0, (count > 1) ? 1 : 0];
         },
       }),
   },
   {
-    name: "4 Encoder",
+    name: "8 Inverter",
     type: "gate",
-    dataGenerator: () =>
-      Generators.generateDefaultGateData({
-        label: "Ecdr",
-        numInputs: 2 ** 4,
-        gateFunction: (inputs) => {
-          const value = inputs.findIndex((v) => v === 1) ?? 0;
+    dataGenerator: () => Generators.generateDefaultGateData({
+      label: "8Inv",
+      numInputs: 9,
+      gateFunction: (inputs) => {
+        const index = inputs.reduce(
+          (total, curr, i) => total + (curr === 1 ? 2 ** i : 0),
+          0
+        );
 
-          return Array.from(
-            { length: Math.log2(inputs.length) },
-            (_, i) => Math.floor(value / 2 ** i) % 2
-          );
-        },
-      }),
+        return inverterTable8[index];
+      }
+    })
+  },
+  {
+    name: "8 Multiplexer",
+    type: "gate",
+    dataGenerator: () => Generators.generateDefaultGateData({
+      label: "8Mplx",
+      numInputs: 17,
+      gateFunction: (inputs) => {
+        const index = inputs.reduce(
+          (total, curr, i) => total + (curr === 1 ? 2 ** i : 0),
+          0
+        );
+
+        return multiplexerTable8[index];
+      }
+    })
   },
   {
     name: "7 Seg Decoder",
@@ -208,36 +233,80 @@ export const defaultSelectionNodeTypes = [
         },
       }),
   },
-  // {
-  //   name: "SR Latch",
-  //   type: "gate",
-  //   dataGenerator: () => {
-  //     let prevOutputs = [0, 0];
+  {
+    name: "ALU",
+    type: "gate",
+    dataGenerator: () => Generators.generateDefaultGateData({
+      label: "ALU",
+      numInputs: 18,
+      gateFunction: (inputs) => {
+        const invertB = inputs[0] === 1;
+        const add1 = inputs[1] === 1;
+        const numberA = parseInt(inputs.slice(2, 10).reverse().reduce((total, curr) => total + curr, ""), 2);
+        const numberB = parseInt(inputs.slice(10, 18).map(val => (invertB === (val === 1)) ? 0 : 1).reverse().reduce((total, curr) => total + curr, ""), 2);
+        const total = numberA + numberB + (add1 ? 1 : 0);
+        const binaryString = ("00000000" + total.toString(2)).slice(-8);
 
-  //     Generators.generateDefaultGateData({
-  //       label: "SR",
-  //       numInputs: 2,
-  //       gateFunction: (inputs) => {
-  //         let result;
-  //         if (inputs[0] === 1) {
-  //           if (inputs[1] === 1) {
-  //             result = [0, 0];
-  //           } else {
-  //             result = [0, 1];
-  //           }
-  //         } else {
-  //           if (inputs[1] === 1) {
-  //             result = [1, 0];
-  //           } else {
-  //             result = prevOutputs;
-  //           }
-  //         }
+        return binaryString.split("").map(bit => parseInt(bit)).reverse();
+      }
+    })
+  },
+  {
+    name: "Register",
+    type: "stateGate",
+    dataGenerator: () => Generators.generateDefaultStateGateData({
+      label: "Reg",
+      numInputs: 2,
+      initialStates: {
+        prevInput: 0,
+        prevOutput: 0,
+      },
+      gateFunction: (inputs, states) => {
+        if (inputs[0] === 1 && states.prevInput !== 1) {
+          return [
+            [inputs[1]],
+            {
+              ...states,
+              prevInput: 1,
+              prevOutput: inputs[1]
+            }
+          ];
+        }
 
-  //         prevOutputs = result;
+        return [[states.prevOutput], {
+          ...states,
+          prevInput: inputs[0],
+        }];
+      }
+    })
+  },
+  {
+    name: "Register 8",
+    type: "stateGate",
+    dataGenerator: () => Generators.generateDefaultStateGateData({
+      label: "8Reg",
+      numInputs: 9,
+      initialStates: {
+        prevInput: 0,
+        prevOutputs: [0, 0, 0, 0, 0, 0, 0, 0],
+      },
+      gateFunction: (inputs, states) => {
+        if (inputs[0] === 1 && states.prevInput !== 1) {
+          return [
+            inputs.slice(-8),
+            {
+              ...states,
+              prevInput: 1,
+              prevOutputs: inputs.slice(-8)
+            }
+          ];
+        }
 
-  //         return result;
-  //       },
-  //     });
-  //   },
-  // },
+        return [states.prevOutputs, {
+          ...states,
+          prevInput: inputs[0],
+        }];
+      }
+    })
+  }
 ];

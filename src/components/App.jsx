@@ -5,11 +5,13 @@ import Flow from "./Flow";
 import "./App.css";
 import { Container, Row, Col } from "react-bootstrap";
 import { ReactFlowProvider } from "reactflow";
+import Tutorial from "./Tutorial";
 
 export default function App() {
   return (
     <ReactFlowProvider>
       <Container fluid>
+        <Tutorial />
         <Row>
           <Col md={1} style={{ width: "200px", padding: 0 }}>
             <SelectionBar></SelectionBar>
